@@ -16,12 +16,6 @@ func Page(title string, hideHeader bool, children ...g.Node) g.Node {
 			Link(Rel("stylesheet"), Href("/public/styles.css")),
 			Script(g.Text("let FF_FOUC_FIX;")),
 			Script(Src("https://unpkg.com/htmx.org")),
-			StyleEl(g.Text(`
-@media all and (display-mode: fullscreen) {
-#header {
-	display: none;
-  }
-}`)),
 		},
 		Body: []g.Node{Class("bg-gradient-to-b bg-no-repeat from-white to-slate-300"),
 			Div(Class("min-h-screen justify-between flex flex-col"),

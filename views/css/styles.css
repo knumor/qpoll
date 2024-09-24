@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	@media all and (display-mode: fullscreen) {
+		#header {
+			display: none;
+		}
+	}
+}
