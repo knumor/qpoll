@@ -43,7 +43,7 @@ func voteInput(placehoder string) g.Node {
 }
 
 // VoteForm is the form to vote on a qpoll.
-func VoteForm(id string) g.Node {
+func VoteForm(id string, redo bool) g.Node {
 	return Form(
 		Method("post"),
 		Action("/vote"),
@@ -56,6 +56,10 @@ func VoteForm(id string) g.Node {
 		voteInput("Enter a word"),
 		voteInput("Enter another word"),
 		voteInput("Enter another word"),
+		g.If(redo, P(
+			Class("text-sky-700 w-48 text-center self-center"),
+			g.Text("Thank you for voting! Feel free to vote again above."),
+		)),
 		SubmitButton("Vote"),
 	)
 }

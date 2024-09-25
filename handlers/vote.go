@@ -18,7 +18,7 @@ func (hc *HandlerContext) VotePage(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to load poll", http.StatusInternalServerError)
 		return
 	}
-	_ = views.VotePage(p.ID(), p.Question()).Render(rw)
+	_ = views.VotePage(p.ID(), p.Question(), false).Render(rw)
 }
 
 // VoteSubmit submits a vote.
@@ -46,5 +46,5 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 		wc.AddWord(w)
 	}
 	_ = hc.store.Save(wc)
-	_ = views.ThankYouPage().Render(rw)
+	_ = views.VotePage(p.ID(), p.Question(), true).Render(rw)
 }
