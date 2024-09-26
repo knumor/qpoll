@@ -39,6 +39,7 @@ func voteInput(placehoder string, autofocus bool) g.Node {
 		Name("words"),
 		Placeholder(placehoder),
 		MaxLength("25"),
+		g.If(autofocus, AutoFocus()),
 	)
 }
 
@@ -53,9 +54,9 @@ func WordsVoteForm(id string, redo bool) g.Node {
 			Value(id),
 			Type("hidden"),
 		),
-		voteInput("Enter a word"),
-		voteInput("Enter another word"),
-		voteInput("Enter another word"),
+		voteInput("Enter a word", true),
+		voteInput("Enter another word", false),
+		voteInput("Enter another word", false),
 		g.If(redo, P(
 			Class("text-sky-700 w-48 text-center self-center"),
 			g.Text("Thank you for voting! Feel free to vote again above."),
