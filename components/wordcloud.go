@@ -13,7 +13,7 @@ import (
 // WordCloud is a dynamic word cloud component.
 func WordCloud(id string, words []models.Word) g.Node {
 	return Div(ID("wordcloud"),
-		Class("w-96 !mt-[15svh] [&>ul>li>p]:transition-all [&>ul>li>p]:duration-[1500ms] [&>ul>li>p]:ease-in"),
+		Class("max-w-lg !mt-[15svh] [&>ul>li>p]:transition-all [&>ul>li>p]:duration-[1500ms] [&>ul>li>p]:ease-in"),
 		hx.Get("/wordcloud/"+id),
 		hx.Trigger("every 2s"),
 		hx.Target("this"),
