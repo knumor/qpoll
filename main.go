@@ -27,5 +27,5 @@ func main() {
 	mux.HandleFunc("GET /qr/{id}", handlerContext.GenQRForPoll)
 	mux.Handle("GET /public/", http.StripPrefix("/public/", http.FileServer(http.FS(staticFs))))
 	mux.HandleFunc("GET /", handlers.JoinPollPage)
-	_ = http.ListenAndServe("localhost:8080", mux)
+	_ = http.ListenAndServe("0.0.0.0:8080", mux)
 }
