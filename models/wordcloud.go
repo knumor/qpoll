@@ -10,6 +10,7 @@ type Word struct {
 	Index  int
 	Text   string
 	Weight float64
+	Freq   int
 }
 
 // WordCloud is a word cloud model.
@@ -47,6 +48,7 @@ func (wc *WordCloud) GetWords() []Word {
 		words = append(words, Word{
 			Text:   word,
 			Weight: float64(count),
+			Freq:   count,
 		})
 	}
 	wc.RUnlock()
