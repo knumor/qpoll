@@ -20,6 +20,7 @@ func ShowWordCloudPage(wc *models.WordCloud) g.Node {
 				Class("text-sky-900 text-center"),
 				g.Text(fmt.Sprintf("To join, go to qpoll.io/join and enter the code %s", wc.Code())),
 			),
+			Img(Class("w-48 absolute top-10 right-10"), Src(fmt.Sprintf("/qr/%s", wc.ID()))),
 			components.WordCloud(wc.ID(), wc.GetWords()),
 		),
 	)

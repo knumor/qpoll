@@ -24,6 +24,7 @@ func main() {
 	mux.HandleFunc("POST /vote", handlerContext.VoteSubmit)
 	mux.HandleFunc("POST /join", handlerContext.JoinExistingPoll)
 	mux.HandleFunc("GET /present/{id}", handlerContext.PresentPoll)
+	mux.HandleFunc("GET /qr/{id}", handlerContext.GenQRForPoll)
 	mux.Handle("GET /public/", http.StripPrefix("/public/", http.FileServer(http.FS(staticFs))))
 	mux.HandleFunc("GET /", handlers.JoinPollPage)
 	_ = http.ListenAndServe("localhost:8080", mux)
