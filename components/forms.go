@@ -32,7 +32,7 @@ func JoinForm(value, errorMsg string) g.Node {
 	)
 }
 
-func voteInput(placehoder string) g.Node {
+func voteInput(placehoder string, autofocus bool) g.Node {
 	return Input(
 		Class("p-2 border rounded-md text-lg"),
 		Type("text"),
@@ -42,8 +42,8 @@ func voteInput(placehoder string) g.Node {
 	)
 }
 
-// VoteForm is the form to vote on a qpoll.
-func VoteForm(id string, redo bool) g.Node {
+// WordsVoteForm is the form to vote on a qpoll.
+func WordsVoteForm(id string, redo bool) g.Node {
 	return Form(
 		Method("post"),
 		Action("/vote"),
