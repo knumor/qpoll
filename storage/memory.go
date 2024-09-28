@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"sync"
 
+	"github.com/knumor/qpoll/handlers"
 	"github.com/knumor/qpoll/models"
 )
 
@@ -15,7 +16,7 @@ type memstore struct {
 }
 
 // NewMemStore creates a new in-memory storage.
-func NewMemStore() Storage {
+func NewMemStore() handlers.Storage {
 	return &memstore{
 		pollsByID:   make(map[string]models.Poll),
 		pollsByCode: make(map[string]models.Poll),
@@ -57,4 +58,7 @@ func (ms *memstore) LoadByCode(code string) (models.Poll, error) {
 		return p, nil
 	}
 	return nil, fmt.Errorf("poll with code %s not found", code)
+}
+
+func (ms *memstore) Close() {
 }

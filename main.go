@@ -14,7 +14,16 @@ var staticFiles embed.FS
 
 func main() {
 	staticFs, _ := fs.Sub(staticFiles, "public")
-	handlerContext := handlers.NewHandlerContext(storage.NewMemStore())
+	pollStorage := storage.NewSQLiteStore()
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		slog.Info("Shutting down")
+		pollStorage.Close()
+		os.Exit(0)
+	}()
+	handlerContext := handlers.NewHandlerContext(pollStorage)
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /create/wordcloud", handlers.CreateWordCloudPage)
 	mux.HandleFunc("POST /create/wordcloud", handlerContext.CreateWordCloud)
