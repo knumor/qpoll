@@ -1,8 +1,12 @@
 package models
 
 import (
+	"encoding/json"
+	"fmt"
+	"log/slog"
 	"sort"
 	"sync"
+	"time"
 )
 
 // Word is a word in a word cloud.
@@ -24,8 +28,37 @@ type WordCloud struct {
 func NewWordCloud(question string) *WordCloud {
 	return &WordCloud{
 		CommonPollData: initPoll(question, WordCloudPoll),
-		words: make(map[string]int),
+		words:          make(map[string]int),
 	}
+}
+
+// WordCloudFromJSON makes a word cloud with a given id/code and data from JSON.
+func WordCloudFromJSON(id string, data []byte) (*WordCloud, error) {
+	var loadStruct struct {
+		Question string `json:"question"`
+		Words map[string]int `json:"words"`
+		CreatedAt time.Time `json:"createdAt"`
+		PollType PollType `json:"polltype"`
+		NumResponses int `json:"numResponses"`
+		NumVotes int `json:"numVotes"`
+	}
+
+	err := json.Unmarshal(data, &loadStruct)
+	if err != nil {
+		slog.Error("Failed to unmarshal word cloud", "error", err)
+	}
+
+	var wc WordCloud
+	wc.id = id
+	wc.idgen = newIDGenerator()
+	wc.words = loadStruct.Words
+	wc.createdAt = loadStruct.CreatedAt
+	wc.question = loadStruct.Question
+	wc.polltype = loadStruct.PollType
+	wc.numResponses = loadStruct.NumResponses
+	wc.numVotes = loadStruct.NumVotes
+
+	return &wc, nil
 }
 
 // AddWord adds a word to the word cloud.
@@ -63,3 +96,20 @@ func (wc *WordCloud) GetWords() []Word {
 	}
 	return words
 }
+
+// MarshalJSON marshals the word cloud to JSON.
+func (wc *WordCloud) MarshalJSON() ([]byte, error) {
+	ts, _ := wc.CreatedAt().MarshalJSON()
+	words, _ := json.Marshal(wc.words)
+	return []byte(fmt.Sprintf(
+		`{"id":"%s","question":"%s","createdAt":%s,"polltype":%d,"numResponses":%d,"numVotes":%d,"words":%s}`,
+		wc.ID(),
+		wc.Question(),
+		string(ts),
+		wc.Type(),
+		wc.numResponses,
+		wc.numVotes,
+		string(words),
+	)), nil
+}
+

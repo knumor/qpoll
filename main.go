@@ -3,7 +3,11 @@ package main
 import (
 	"embed"
 	"io/fs"
+	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/knumor/qpoll/handlers"
 	"github.com/knumor/qpoll/storage"
