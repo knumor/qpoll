@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/knumor/qpoll/components"
 	"github.com/knumor/qpoll/views"
@@ -16,6 +17,7 @@ func JoinPollPage(rw http.ResponseWriter, _ *http.Request) {
 // JoinExistingPoll tries to join an existing poll.
 func (hc *HandlerContext) JoinExistingPoll(rw http.ResponseWriter, r *http.Request) {
 	code := r.FormValue("code")
+	code = strings.ReplaceAll(code, " ", "")
 	p, err := hc.store.LoadByCode(code)
 	if err != nil {
 		_= components.JoinForm(code, err.Error()).Render(rw)

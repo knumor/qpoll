@@ -11,6 +11,7 @@ import (
 
 // ShowWordCloudPage is the page to show a word cloud.
 func ShowWordCloudPage(wc *models.WordCloud) g.Node {
+	codeStr := fmt.Sprintf("%s", wc.Code())
 	return components.Page(
 		"Word Cloud",
 		false,
@@ -18,7 +19,12 @@ func ShowWordCloudPage(wc *models.WordCloud) g.Node {
 			H1(Class("text-3xl text-sky-700"), g.Text(wc.Question())),
 			H3(
 				Class("text-sky-900 text-center"),
-				g.Text(fmt.Sprintf("To join, go to qpoll.io/join and enter the code %s", wc.Code())),
+				g.Text("To join, go to qpoll.io/join and enter the code  "),
+				Span(Class("font-bold text-sky-700 text-xl tracking-widest py-1 px-1 rounded bg-slate-300"),
+					g.Text(codeStr[0:4]),
+					g.Text(" "),
+					g.Text(codeStr[4:8]),
+				),
 			),
 			Img(Class("w-48 absolute top-10 right-10"), Src(fmt.Sprintf("/qr/%s", wc.ID()))),
 			components.WordCloud(wc.ID(), wc.GetWords()),
