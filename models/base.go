@@ -13,7 +13,7 @@ type PollType int
 
 // Supported Poll types.
 const (
-	MultipleChoicePoll PollType = iota
+	MultipleChoicePoll PollType = iota + 1
 	WordCloudPoll
 )
 
@@ -103,7 +103,7 @@ func (cpd *CommonPollData) AddVote(responseCount int) {
 }
 
 func newPollCode() uint64 {
-	return uint64(10000000+rand.Intn(90000000))
+	return uint64(10000000 + rand.Intn(90000000))
 }
 
 func newIDGenerator() *sqids.Sqids {
