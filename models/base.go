@@ -24,15 +24,20 @@ type Poll interface {
 	Code() string
 	CreatedAt() time.Time
 	Type() PollType
+	ResponseCount() int
+	VoteCount() int
+	AddVote(int)
 }
 
 // CommonPollData is a struct with common poll data
 type CommonPollData struct {
-	id        string
-	idgen     *sqids.Sqids
-	question  string
-	createdAt time.Time
-	polltype  PollType
+	id           string
+	idgen        *sqids.Sqids
+	question     string
+	createdAt    time.Time
+	polltype     PollType
+	numResponses int
+	numVotes     int
 }
 
 func initPoll(question string, polltype PollType) CommonPollData {
@@ -78,6 +83,22 @@ func (cpd CommonPollData) CreatedAt() time.Time {
 // Type returns the type of the poll.
 func (cpd CommonPollData) Type() PollType {
 	return cpd.polltype
+}
+
+// ResponseCount returns the number of responses to the poll.
+func (cpd CommonPollData) ResponseCount() int {
+	return cpd.numResponses
+}
+
+// VoteCount returns the number of clients that have accessed the poll.
+func (cpd CommonPollData) VoteCount() int {
+	return cpd.numVotes
+}
+
+// AddVote increments the number of votes and responses.
+func (cpd *CommonPollData) AddVote(responseCount int) {
+	cpd.numVotes++
+	cpd.numResponses += responseCount
 }
 
 func newPollCode() uint64 {

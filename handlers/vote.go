@@ -39,12 +39,15 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 	}
 	words := r.PostForm["words"]
 	slog.Info("Voted for words", "words", words)
+	var cnt int
 	for _, w := range words {
 		if w == "" {
 			continue
 		}
 		wc.AddWord(w)
+		cnt++
 	}
+	wc.AddVote(cnt)
 	_ = hc.store.Save(wc)
 	_ = views.WordsVotePage(p.ID(), p.Question(), true).Render(rw)
 }

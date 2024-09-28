@@ -31,5 +31,6 @@ func (hc *HandlerContext) GetWordCloud(rw http.ResponseWriter, r *http.Request) 
 		return
 	}
 	words := wc.GetWords()
+	_ = components.PollCounter(wc.ResponseCount(), wc.VoteCount()).Render(rw)
 	_ = components.WordCloud(id, words).Render(rw)
 }

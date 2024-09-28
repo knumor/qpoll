@@ -16,6 +16,7 @@ func ShowWordCloudPage(wc *models.WordCloud) g.Node {
 		"Word Cloud",
 		false,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] items-center space-y-4"),
+			components.PollCounter(wc.ResponseCount(), wc.VoteCount()),
 			H1(Class("text-3xl text-sky-700"), g.Text(wc.Question())),
 			H3(
 				Class("text-sky-900 text-center"),
