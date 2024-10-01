@@ -32,11 +32,11 @@ func JoinForm(value, errorMsg string) g.Node {
 	)
 }
 
-func voteInput(placehoder string, autofocus bool) g.Node {
+func voteTextInput(placehoder, name string, autofocus bool) g.Node {
 	return Input(
 		Class("p-2 border rounded-md text-lg"),
 		Type("text"),
-		Name("words"),
+		Name(name),
 		Placeholder(placehoder),
 		MaxLength("25"),
 		g.If(autofocus, AutoFocus()),
@@ -54,9 +54,9 @@ func WordsVoteForm(id string, redo bool) g.Node {
 			Value(id),
 			Type("hidden"),
 		),
-		voteInput("Enter a word", true),
-		voteInput("Enter another word", false),
-		voteInput("Enter another word", false),
+		voteTextInput("Enter a word", "words", true),
+		voteTextInput("Enter another word", "words", false),
+		voteTextInput("Enter another word", "words", false),
 		g.If(redo, P(
 			Class("text-sky-700 w-48 text-center self-center"),
 			g.Text("Thank you for voting! Feel free to vote again above."),
