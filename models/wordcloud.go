@@ -99,8 +99,11 @@ func (wc *WordCloud) GetWords() []Word {
 
 // MarshalJSON marshals the word cloud to JSON.
 func (wc *WordCloud) MarshalJSON() ([]byte, error) {
-	ts, _ := wc.CreatedAt().MarshalJSON()
-	words, _ := json.Marshal(wc.words)
+	ts, err := wc.CreatedAt().MarshalJSON()
+	words, err := json.Marshal(wc.words)
+	if err != nil {
+		return nil, err
+	}
 	return []byte(fmt.Sprintf(
 		`{"id":"%s","question":"%s","createdAt":%s,"polltype":%d,"numResponses":%d,"numVotes":%d,"words":%s}`,
 		wc.ID(),
