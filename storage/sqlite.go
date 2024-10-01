@@ -130,7 +130,7 @@ func (s *sqlite) LoadByCode(code string) (models.Poll, error) {
 func createPollObject(id string, pollType models.PollType, data string) (models.Poll, error) {
 	switch pollType {
 	case models.MultipleChoicePoll:
-		return nil, fmt.Errorf("multiple choice poll not supported")
+		return models.MultipleChoiceFromJSON(id, []byte(data))
 	case models.WordCloudPoll:
 		return models.WordCloudFromJSON(id, []byte(data))
 	default:

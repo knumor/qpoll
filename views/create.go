@@ -46,3 +46,30 @@ func CreateWordCloudPage() g.Node {
 		),
 	)
 }
+
+// CreateMultipleChoicePage is the page to create a multiple choice qpoll.
+func CreateMultipleChoicePage() g.Node {
+	return components.Page(
+		"Create Multiple Choice",
+		false,
+		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] justify-center items-center space-y-4"),
+			H1(Class("text-3xl text-sky-700"), g.Text("Create a multiple choice poll")),
+			Form(
+				Method("post"),
+				Action("/create/mc"),
+				Class("flex flex-col space-y-4 w-1/2"),
+				Input(
+					Class("p-2 border rounded-md"),
+					AutoFocus(),
+					Type("text"),
+					Name("question"),
+					Placeholder("Ask your question here..."),
+					Required(),
+				),
+				P(Class("text-sky-700 self-center"), g.Text("You may provide up to 6 options to choose from:")),
+				components.MultipleChoiceInputs("options", 6),
+				components.SubmitButton("Create"),
+			),
+		),
+	)
+}

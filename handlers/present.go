@@ -21,7 +21,7 @@ func (hc *HandlerContext) PresentPoll(rw http.ResponseWriter, r *http.Request) {
 	case models.WordCloudPoll:
 		_ = views.ShowWordCloudPage(p.(*models.WordCloud)).Render(rw)
 	case models.MultipleChoicePoll:
-		http.Error(rw, "multiple choice polls not implemented", http.StatusNotImplemented)
+		_ = views.ShowMultipleChoicePage(p.(*models.MultipleChoice)).Render(rw)
 	default:
 		slog.Error("PresentPoll: Invalid poll type", "type", p.Type())
 		http.Error(rw, "invalid poll type", http.StatusBadRequest)

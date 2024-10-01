@@ -12,6 +12,8 @@ func Page(title string, hideHeader bool, children ...g.Node) g.Node {
 		Title:    title,
 		Language: "en",
 		Head: []g.Node{
+			Link(Rel("preload"), Href("https://unpkg.com/charts.css/dist/charts.min.css"), As("style")),
+			Link(Rel("stylesheet"), Href("https://unpkg.com/charts.css/dist/charts.min.css")),
 			Link(Rel("preload"), Href("/public/styles.css"), As("style")),
 			Link(Rel("stylesheet"), Href("/public/styles.css")),
 			Script(g.Text("let FF_FOUC_FIX;")),
