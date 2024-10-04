@@ -64,6 +64,6 @@ func container(padY bool, children ...g.Node) g.Node {
 
 func footer() g.Node {
 	return Div(Class("text-slate-400 justify-center flex h-8 items-center text-center text-sm"),
-		P(g.Text("qpoll.io - a service by knumor")),
+		P(g.Text("qpoll.mk.priv.no - a service by @knumor")),
 	)
 }
