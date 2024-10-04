@@ -32,7 +32,7 @@ func MultipleChoiceResults(id string, options []models.Option) g.Node {
 						Td(
 							ID(fmt.Sprintf("mc-bar-%d", option.Index)),
 							Style(fmt.Sprintf("--size: %.2f", w)),
-							Span(Class("data text-3xl"), g.Text(fmt.Sprintf("%d", option.Count))),
+							Span(Class("data text-3xl"), g.Textf("%d", option.Count)),
 						),
 					)
 				}),
