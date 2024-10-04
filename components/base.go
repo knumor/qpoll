@@ -39,7 +39,7 @@ func header() g.Node {
 	return Div(ID("header"), Class("bg-slate-300 uppercase text-sm text-sky-800 shadow"),
 		container(false,
 			Div(Class("flex h-8 items-center space-x-4"),
-				headerLink("/", "Home"),
+				headerLink("/", "Join"),
 				headerLink("/create", "Create"),
 				A(Class("hover:text-sky-500 !ml-auto"), Href("/"), g.Text("Morten")),
 			),
