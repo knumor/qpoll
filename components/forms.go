@@ -11,7 +11,7 @@ import (
 )
 
 // JoinForm is the form to join a qpoll.
-func JoinForm(value, errorMsg string) g.Node {
+func JoinForm(value, errorMsg, csrfToken string) g.Node {
 	return Form(
 		hx.Post("/join"),
 		hx.Target("this"),
@@ -27,6 +27,11 @@ func JoinForm(value, errorMsg string) g.Node {
 				value != "",
 				Value(value),
 			), AutoFocus(), Type("text"), Placeholder("1234 5678"), Required()),
+		Input(
+			Name("csrf_token"),
+			Value(csrfToken),
+			Type("hidden"),
+		),
 		g.If(
 			errorMsg != "",
 			Div(Class("text-red-700"), g.Text(errorMsg)),
@@ -65,7 +70,7 @@ func voteRadioInput(id, label, name, value string) g.Node {
 }
 
 // WordsVoteForm is the form to vote on a qpoll.
-func WordsVoteForm(id string, redo bool) g.Node {
+func WordsVoteForm(id string, redo bool, csrfToken string) g.Node {
 	return Form(
 		Method("post"),
 		Action("/vote"),
@@ -73,6 +78,11 @@ func WordsVoteForm(id string, redo bool) g.Node {
 		Input(
 			Name("id"),
 			Value(id),
+			Type("hidden"),
+		),
+		Input(
+			Name("csrf_token"),
+			Value(csrfToken),
 			Type("hidden"),
 		),
 		voteTextInput("Enter a word", "words", true),
@@ -98,7 +108,7 @@ func MultipleChoiceInputs(name string, count int) g.Node {
 }
 
 // MultipleChoiceVoteForm is the form to vote on a multiple choice qpoll.
-func MultipleChoiceVoteForm(id string, options []models.Option) g.Node {
+func MultipleChoiceVoteForm(id string, options []models.Option, csrfToken string) g.Node {
 	return Form(
 		Method("post"),
 		Action("/vote"),
@@ -107,6 +117,11 @@ func MultipleChoiceVoteForm(id string, options []models.Option) g.Node {
 			Input(
 				Name("id"),
 				Value(id),
+				Type("hidden"),
+			),
+			Input(
+				Name("csrf_token"),
+				Value(csrfToken),
 				Type("hidden"),
 			),
 			g.Group(

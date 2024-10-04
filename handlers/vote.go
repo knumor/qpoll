@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/models"
 	"github.com/knumor/qpoll/views"
 )
@@ -18,12 +19,13 @@ func (hc *HandlerContext) VotePage(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to load poll", http.StatusInternalServerError)
 		return
 	}
+	csrfToken := csrf.Token(r)
 	switch p.Type() {
 	case models.WordCloudPoll:
-		_ = views.WordsVotePage(p.ID(), p.Question(), false).Render(rw)
+		_ = views.WordsVotePage(p.ID(), p.Question(), false, csrfToken).Render(rw)
 	case models.MultipleChoicePoll:
 		mc := p.(*models.MultipleChoice)
-		_ = views.MultipleChoiceVotePage(mc.ID(), mc.Question(), mc.GetOptions()).Render(rw)
+		_ = views.MultipleChoiceVotePage(mc.ID(), mc.Question(), mc.GetOptions(), csrfToken).Render(rw)
 	default:
 		slog.Error("Invalid poll type", "type", p.Type())
 		http.Error(rw, "invalid poll type", http.StatusBadRequest)
@@ -40,6 +42,7 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to load poll", http.StatusInternalServerError)
 		return
 	}
+	csrfToken := csrf.Token(r)
 	switch p.Type() {
 	case models.WordCloudPoll:
 		words := r.PostForm["words"]
@@ -55,7 +58,7 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 		}
 		wc.AddVote(cnt)
 	_ = hc.store.Save(wc)
-	_ = views.WordsVotePage(p.ID(), p.Question(), true).Render(rw)
+	_ = views.WordsVotePage(p.ID(), p.Question(), true, csrfToken).Render(rw)
 	case models.MultipleChoicePoll:
 		mc := p.(*models.MultipleChoice)
 		choice := r.PostForm.Get("choice")

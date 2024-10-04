@@ -9,12 +9,15 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/handlers"
 	"github.com/knumor/qpoll/storage"
 )
 
 //go:embed public
 var staticFiles embed.FS
+
+var Env = "dev"
 
 func main() {
 	staticFs, _ := fs.Sub(staticFiles, "public")
@@ -34,7 +37,18 @@ func main() {
 	handlerContext := handlers.NewHandlerContext(pollStorage)
 	setupRoutes(mux, handlerContext)
 
-	_ = http.ListenAndServe("0.0.0.0:8080", mux)
+	secure := true
+	if Env == "dev" {
+		slog.Info("Running in dev mode")
+		secure = false
+	}
+	CSRF := csrf.Protect(
+		[]byte("32-long-byte-key-auth"),
+		csrf.Path("/"),
+		csrf.Secure(secure),
+		csrf.FieldName("csrf_token"),
+	)
+	_ = http.ListenAndServe("0.0.0.0:8080", CSRF(mux))
 }
 
 func setupRoutes(mux *http.ServeMux, hc *handlers.HandlerContext) {

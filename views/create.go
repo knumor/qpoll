@@ -23,7 +23,7 @@ func CreatePage() g.Node {
 }
 
 // CreateWordCloudPage is the page to create a word cloud.
-func CreateWordCloudPage() g.Node {
+func CreateWordCloudPage(csrfToken string) g.Node {
 	return components.Page(
 		"Create Word Cloud",
 		false,
@@ -41,6 +41,11 @@ func CreateWordCloudPage() g.Node {
 					Placeholder("Ask your question here..."),
 					Required(),
 				),
+				Input(
+					Name("csrf_token"),
+					Value(csrfToken),
+					Type("hidden"),
+				),
 				components.SubmitButton("Create"),
 			),
 		),
@@ -48,7 +53,7 @@ func CreateWordCloudPage() g.Node {
 }
 
 // CreateMultipleChoicePage is the page to create a multiple choice qpoll.
-func CreateMultipleChoicePage() g.Node {
+func CreateMultipleChoicePage(csrfToken string) g.Node {
 	return components.Page(
 		"Create Multiple Choice",
 		false,
@@ -65,6 +70,11 @@ func CreateMultipleChoicePage() g.Node {
 					Name("question"),
 					Placeholder("Ask your question here..."),
 					Required(),
+				),
+				Input(
+					Name("csrf_token"),
+					Value(csrfToken),
+					Type("hidden"),
 				),
 				P(Class("text-sky-700 self-center"), g.Text("You may provide up to 6 options to choose from:")),
 				components.MultipleChoiceInputs("options", 6),
