@@ -49,8 +49,10 @@ func joinHeader(id, codeStr string) g.Node {
 		[]g.Node{
 			H3(
 				Class("text-sky-900 text-center"),
-				g.Text("To join, go to qpoll.mk.priv.no and enter the code  "),
-				Span(Class("font-bold text-sky-700 text-2xl tracking-widest py-1 px-1 rounded bg-slate-300"),
+				g.Text("To join, go to "),
+				Span(Class("font-mono font-bold"), g.Text("qpoll.mk.priv.no")),
+				g.Text(" and enter the code  "),
+				Span(Class("font-bold text-sky-700 font-mono text-2xl tracking-widest py-1 px-1 rounded bg-slate-300"),
 					g.Text(codeStr[0:4]),
 					g.Text(" "),
 					g.Text(codeStr[4:8]),
