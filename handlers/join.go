@@ -7,13 +7,12 @@ import (
 
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/components"
-	"github.com/knumor/qpoll/views"
 )
 
 // JoinPollPage serves the join poll page.
-func JoinPollPage(rw http.ResponseWriter, r *http.Request) {
+func (hc *HandlerContext) JoinPollPage(rw http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
-	_= views.JoinPage("", "", csrfToken).Render(rw)
+	_= hc.pages.JoinPage("", "", csrfToken).Render(rw)
 }
 
 // JoinExistingPoll tries to join an existing poll.

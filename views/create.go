@@ -7,10 +7,11 @@ import (
 )
 
 // CreatePage is the page to create a new qpoll.
-func CreatePage() g.Node {
+func (pr *PageCollection) CreatePage() g.Node {
 	return components.Page(
 		"Home",
 		false,
+		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] justify-center items-center space-y-4"),
 			H1(Class("text-3xl text-sky-700"), g.Text("What do you want to create?")),
 			Div(
@@ -23,10 +24,11 @@ func CreatePage() g.Node {
 }
 
 // CreateWordCloudPage is the page to create a word cloud.
-func CreateWordCloudPage(csrfToken string) g.Node {
+func (pr *PageCollection) CreateWordCloudPage(csrfToken string) g.Node {
 	return components.Page(
 		"Create Word Cloud",
 		false,
+		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] justify-center items-center space-y-4"),
 			H1(Class("text-3xl text-sky-700"), g.Text("Create a word cloud")),
 			Form(
@@ -53,10 +55,11 @@ func CreateWordCloudPage(csrfToken string) g.Node {
 }
 
 // CreateMultipleChoicePage is the page to create a multiple choice qpoll.
-func CreateMultipleChoicePage(csrfToken string) g.Node {
+func (pr *PageCollection) CreateMultipleChoicePage(csrfToken string) g.Node {
 	return components.Page(
 		"Create Multiple Choice",
 		false,
+		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] justify-center items-center space-y-4"),
 			H1(Class("text-3xl text-sky-700"), g.Text("Create a multiple choice poll")),
 			Form(

@@ -1,13 +1,14 @@
 package components
 
 import (
+	"github.com/knumor/qpoll/models"
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
 	. "github.com/maragudk/gomponents/html"
 )
 
 // Page is the base page layout.
-func Page(title string, hideHeader bool, children ...g.Node) g.Node {
+func Page(title string, hideHeader bool, authUser models.User, children ...g.Node) g.Node {
 	return c.HTML5(c.HTML5Props{
 		Title:    title,
 		Language: "en",
@@ -21,7 +22,7 @@ func Page(title string, hideHeader bool, children ...g.Node) g.Node {
 		},
 		Body: []g.Node{Class("bg-gradient-to-b bg-no-repeat from-white to-slate-300"),
 			Div(Class("min-h-screen justify-between flex flex-col"),
-				g.If(!hideHeader, header()),
+				g.If(!hideHeader, header(authUser.Name)),
 				Div(Class("grow"),
 					container(true,
 						Div(Class(""),
@@ -35,13 +36,20 @@ func Page(title string, hideHeader bool, children ...g.Node) g.Node {
 	})
 }
 
-func header() g.Node {
+func header(authName string) g.Node {
 	return Div(ID("header"), Class("bg-slate-300 uppercase text-sm text-sky-800 shadow"),
 		container(false,
 			Div(Class("flex h-8 items-center space-x-4"),
 				headerLink("/", "Join"),
 				headerLink("/create", "Create"),
-				A(Class("hover:text-sky-500 !ml-auto"), Href("/"), g.Text("Morten")),
+				A(Class("hover:text-sky-500 !ml-auto"),
+					g.If(authName != "", g.Group(
+						[]g.Node{Href("/profile"), g.Text(authName)}),
+					),
+					g.If(authName == "", g.Group(
+						[]g.Node{Href("/login"), g.Text("Login")}),
+					),
+				),
 			),
 		),
 	)

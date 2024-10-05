@@ -6,13 +6,12 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/components"
 	"github.com/knumor/qpoll/models"
-	"github.com/knumor/qpoll/views"
 )
 
 // CreateWordCloudPage serves the create word cloud page.
-func CreateWordCloudPage(rw http.ResponseWriter, r *http.Request) {
+func (hc *HandlerContext) CreateWordCloudPage(rw http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
-	_ = views.CreateWordCloudPage(csrfToken).Render(rw)
+	_ = hc.pages.CreateWordCloudPage(csrfToken).Render(rw)
 }
 
 // CreateWordCloud creates a word cloud.

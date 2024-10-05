@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/knumor/qpoll/models"
-	"github.com/knumor/qpoll/views"
 )
 
 // PresentPoll serves the poll page.
@@ -19,9 +18,9 @@ func (hc *HandlerContext) PresentPoll(rw http.ResponseWriter, r *http.Request) {
 	}
 	switch p.Type() {
 	case models.WordCloudPoll:
-		_ = views.ShowWordCloudPage(p.(*models.WordCloud)).Render(rw)
+		_ = hc.pages.ShowWordCloudPage(p.(*models.WordCloud)).Render(rw)
 	case models.MultipleChoicePoll:
-		_ = views.ShowMultipleChoicePage(p.(*models.MultipleChoice)).Render(rw)
+		_ = hc.pages.ShowMultipleChoicePage(p.(*models.MultipleChoice)).Render(rw)
 	default:
 		slog.Error("PresentPoll: Invalid poll type", "type", p.Type())
 		http.Error(rw, "invalid poll type", http.StatusBadRequest)

@@ -11,12 +11,13 @@ import (
 )
 
 // ShowWordCloudPage is the page to show a word cloud.
-func ShowWordCloudPage(wc *models.WordCloud) g.Node {
+func (pr *PageCollection) ShowWordCloudPage(wc *models.WordCloud) g.Node {
 	codeStr := fmt.Sprintf("%s", wc.Code())
 	slog.Info("ShowWordCloudPage", "code", codeStr)
 	return components.Page(
 		"Word Cloud",
 		false,
+		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] items-center space-y-4"),
 			components.PollCounter(wc.ResponseCount(), wc.VoteCount()),
 			H1(Class("text-4xl text-sky-700"), g.Text(wc.Question())),
@@ -27,12 +28,13 @@ func ShowWordCloudPage(wc *models.WordCloud) g.Node {
 }
 
 // ShowMultipleChoicePage is the page to show a multiple choice qpoll.
-func ShowMultipleChoicePage(mc *models.MultipleChoice) g.Node {
+func (pr *PageCollection) ShowMultipleChoicePage(mc *models.MultipleChoice) g.Node {
 	codeStr := fmt.Sprintf("%s", mc.Code())
 	slog.Info("ShowMultipleChoicePage", "code", codeStr)
 	return components.Page(
 		"Multple Choice",
 		false,
+		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] space-y-4"),
 			// components.PollCounter(mc.ResponseCount(), mc.VoteCount()),
 			H1(Class("text-4xl text-sky-700 text-center"), g.Text(mc.Question())),

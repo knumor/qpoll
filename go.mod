@@ -3,6 +3,8 @@ module github.com/knumor/qpoll
 go 1.22.2
 
 require (
+	github.com/alexedwards/scs/v2 v2.8.0
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/csrf v1.7.2
 	github.com/maragudk/gomponents v0.20.4
 	github.com/maragudk/gomponents-htmx v0.5.0

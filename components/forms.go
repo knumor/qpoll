@@ -138,3 +138,27 @@ func MultipleChoiceVoteForm(id string, options []models.Option, csrfToken string
 		SubmitButton("Vote"),
 	)
 }
+
+// LoginForm is the form to log in.
+func LoginForm(csrfToken, errorMsg, returnTo string) g.Node {
+	return Form(
+		Method("post"),
+		Action("/login"),
+		Class("flex flex-col space-y-4 w-fit"),
+		Input(
+			Name("returnTo"),
+			Value(returnTo),
+			Type("hidden"),
+		),
+		Input(
+			Name("csrf_token"),
+			Value(csrfToken),
+			Type("hidden"),
+		),
+		g.If(
+			errorMsg != "",
+			Div(Class("text-red-700"), g.Text(errorMsg)),
+		),
+		SubmitButton("Log in"),
+	)
+}
