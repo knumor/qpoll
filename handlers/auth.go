@@ -11,9 +11,9 @@ import (
 
 // LoginPage serves the login page.
 func (hc *HandlerContext) LoginPage(rw http.ResponseWriter, r *http.Request) {
-	r.FormValue("returnTo")
+	returnTo := r.FormValue("returnTo")
 	csrfToken := csrf.Token(r)
-	_ = hc.pages.LoginPage(csrfToken, "", "/create").Render(rw)
+	_ = hc.pages.LoginPage(csrfToken, "", returnTo).Render(rw)
 }
 
 // Authenticate authenticates a user.
