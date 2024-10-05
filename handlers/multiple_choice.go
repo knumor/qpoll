@@ -29,7 +29,12 @@ func (hc *HandlerContext) CreateMultipleChoice(rw http.ResponseWriter, r *http.R
 		opts = append(opts, o)
 	}
 	slog.Info("CreateMultipleChoice", "question", q, "options", opts)
-	mc := models.NewMultipleChoice(q, opts)
+	user, err := hc.UserFromSession(r)
+	if err != nil {
+		http.Error(rw, "Error getting user when creating multiple choice poll", http.StatusBadRequest)
+		return
+	}
+	mc := models.NewMultipleChoice(q, user.Username, opts)
 	hc.store.Save(mc)
 	http.Redirect(rw, r, "/present/"+mc.ID(), http.StatusSeeOther)
 }

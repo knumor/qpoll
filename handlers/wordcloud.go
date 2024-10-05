@@ -17,7 +17,12 @@ func (hc *HandlerContext) CreateWordCloudPage(rw http.ResponseWriter, r *http.Re
 // CreateWordCloud creates a word cloud.
 func (hc *HandlerContext) CreateWordCloud(rw http.ResponseWriter, r *http.Request) {
 	q := r.FormValue("question")
-	wc := models.NewWordCloud(q)
+	user, err := hc.UserFromSession(r)
+	if err != nil {
+		http.Error(rw, "Error getting user when creating wordcloud", http.StatusBadRequest)
+		return
+	}
+	wc := models.NewWordCloud(q, user.Username)
 	hc.store.Save(wc)
 	http.Redirect(rw, r, "/present/"+wc.ID(), http.StatusSeeOther)
 }

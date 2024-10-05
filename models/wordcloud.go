@@ -25,9 +25,9 @@ type WordCloud struct {
 }
 
 // NewWordCloud creates a new word cloud.
-func NewWordCloud(question string) *WordCloud {
+func NewWordCloud(question, owner string) *WordCloud {
 	return &WordCloud{
-		CommonPollData: initPoll(question, WordCloudPoll),
+		CommonPollData: initPoll(question, owner, WordCloudPoll),
 		words:          make(map[string]int),
 	}
 }
@@ -35,12 +35,13 @@ func NewWordCloud(question string) *WordCloud {
 // WordCloudFromJSON makes a word cloud with a given id/code and data from JSON.
 func WordCloudFromJSON(id string, data []byte) (*WordCloud, error) {
 	var loadStruct struct {
-		Question string `json:"question"`
-		Words map[string]int `json:"words"`
-		CreatedAt time.Time `json:"createdAt"`
-		PollType PollType `json:"polltype"`
-		NumResponses int `json:"numResponses"`
-		NumVotes int `json:"numVotes"`
+		Question     string         `json:"question"`
+		Words        map[string]int `json:"words"`
+		Owner        string         `json:"owner"`
+		CreatedAt    time.Time      `json:"createdAt"`
+		PollType     PollType       `json:"polltype"`
+		NumResponses int            `json:"numResponses"`
+		NumVotes     int            `json:"numVotes"`
 	}
 
 	err := json.Unmarshal(data, &loadStruct)
@@ -52,6 +53,7 @@ func WordCloudFromJSON(id string, data []byte) (*WordCloud, error) {
 	wc.id = id
 	wc.idgen = newIDGenerator()
 	wc.words = loadStruct.Words
+	wc.owner = loadStruct.Owner
 	wc.createdAt = loadStruct.CreatedAt
 	wc.question = loadStruct.Question
 	wc.polltype = loadStruct.PollType
@@ -105,14 +107,14 @@ func (wc *WordCloud) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return []byte(fmt.Sprintf(
-		`{"id":"%s","question":"%s","createdAt":%s,"polltype":%d,"numResponses":%d,"numVotes":%d,"words":%s}`,
+		`{"id":"%s","question":"%s","createdAt":%s,"owner":"%s","polltype":%d,"numResponses":%d,"numVotes":%d,"words":%s}`,
 		wc.ID(),
 		wc.Question(),
 		string(ts),
+		wc.owner,
 		wc.Type(),
 		wc.numResponses,
 		wc.numVotes,
 		string(words),
 	)), nil
 }
-

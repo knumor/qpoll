@@ -25,9 +25,9 @@ type MultipleChoice struct {
 }
 
 // NewMultipleChoice creates a new multiple choice poll.
-func NewMultipleChoice(question string, options []string) *MultipleChoice {
+func NewMultipleChoice(question, owner string, options []string) *MultipleChoice {
 	return &MultipleChoice{
-		CommonPollData: initPoll(question, MultipleChoicePoll),
+		CommonPollData: initPoll(question, owner, MultipleChoicePoll),
 		options:        options,
 		counts:         make([]int, len(options)),
 	}
@@ -39,6 +39,7 @@ func MultipleChoiceFromJSON(id string, data []byte) (*MultipleChoice, error) {
 		Question     string    `json:"question"`
 		Options      []string  `json:"options"`
 		Counts       []int     `json:"counts"`
+		Owner        string    `json:"owner"`
 		CreatedAt    time.Time `json:"createdAt"`
 		PollType     PollType  `json:"polltype"`
 		NumResponses int       `json:"numResponses"`
@@ -55,6 +56,7 @@ func MultipleChoiceFromJSON(id string, data []byte) (*MultipleChoice, error) {
 	mc.idgen = newIDGenerator()
 	mc.options = loadStruct.Options
 	mc.counts = loadStruct.Counts
+	mc.owner = loadStruct.Owner
 	mc.createdAt = loadStruct.CreatedAt
 	mc.question = loadStruct.Question
 	mc.polltype = loadStruct.PollType
@@ -119,10 +121,11 @@ func (mc *MultipleChoice) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return []byte(fmt.Sprintf(
-		`{"id":"%s","question":"%s","createdAt":%s,"polltype":%d,"numResponses":%d,"numVotes":%d,"options":%s,"counts":%s}`,
+		`{"id":"%s","question":"%s","createdAt":%s,"owner":"%s","polltype":%d,"numResponses":%d,"numVotes":%d,"options":%s,"counts":%s}`,
 		mc.ID(),
 		mc.Question(),
 		string(ts),
+		mc.owner,
 		mc.Type(),
 		mc.numResponses,
 		mc.numVotes,

@@ -61,8 +61,24 @@ func (hc *HandlerContext) RequireAuth(next http.Handler) http.Handler {
 			http.Error(rw, err.Error(), 500)
 			return
 		}
+		// Set the authenticated user for views to use within this request.
 		hc.pages.AuthenticatedUser = user
 		next.ServeHTTP(rw, r)
+		// Clear the authenticated user from the views after the request is done.
+		hc.pages.AuthenticatedUser = models.User{}
 	}
 	return http.HandlerFunc(fn)
 }
+
+// UserFromSession extracts the user from the session.
+func (hc *HandlerContext) UserFromSession(r *http.Request) (models.User, error) {
+	userdata := hc.sessions.GetString(r.Context(), "user")
+	var user models.User
+	err := json.Unmarshal([]byte(userdata), &user)
+	if err != nil {
+		slog.Error("Failed to unmarshal user data", "error", err)
+		return models.User{}, err
+	}
+	return user, nil
+}
+

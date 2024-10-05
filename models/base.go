@@ -35,13 +35,14 @@ type CommonPollData struct {
 	id           string
 	idgen        *sqids.Sqids
 	question     string
+	owner        string
 	createdAt    time.Time
 	polltype     PollType
 	numResponses int
 	numVotes     int
 }
 
-func initPoll(question string, polltype PollType) CommonPollData {
+func initPoll(question, owner string, polltype PollType) CommonPollData {
 	code := newPollCode()
 	idgen := newIDGenerator()
 	id, err := idgen.Encode([]uint64{code})
@@ -52,6 +53,7 @@ func initPoll(question string, polltype PollType) CommonPollData {
 		id:        id,
 		idgen:     idgen,
 		question:  question,
+		owner:     owner,
 		createdAt: time.Now(),
 		polltype:  polltype,
 	}
