@@ -36,7 +36,7 @@ func (pr *PageCollection) ShowMultipleChoicePage(mc *models.MultipleChoice) g.No
 		false,
 		pr.AuthenticatedUser,
 		Div(Class("flex flex-col min-h-[calc(100dvh-10rem)] space-y-4"),
-			// components.PollCounter(mc.ResponseCount(), mc.VoteCount()),
+			components.PollCounter(-1, mc.VoteCount()),
 			H1(Class("text-4xl text-sky-700 text-center"), g.Text(mc.Question())),
 			joinHeader(mc.ID(), codeStr),
 			components.MultipleChoiceResults(mc.ID(), mc.GetOptions()),
