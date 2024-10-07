@@ -52,7 +52,7 @@ func (hc *HandlerContext) RequireAuth(next http.Handler) http.Handler {
 		userdata := hc.sessions.GetString(r.Context(), "user")
 		slog.Info("RequireAuth", "userdata", userdata)
 		if userdata == "" {
-			http.Redirect(rw, r, "/login?returnTo="+r.URL.Path, http.StatusSeeOther)
+			hxAwareRedirect(rw, r)
 			return
 		}
 		var user models.User
@@ -68,6 +68,15 @@ func (hc *HandlerContext) RequireAuth(next http.Handler) http.Handler {
 		hc.pages.AuthenticatedUser = models.User{}
 	}
 	return http.HandlerFunc(fn)
+}
+
+func hxAwareRedirect(rw http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("HX-Request") == "true" {
+		rw.Header().Set("HX-Redirect", "/login?returnTo=" + r.Header.Get("HX-Current-URL"))
+		rw.WriteHeader(http.StatusOK)
+		return
+	}
+	http.Redirect(rw, r, "/login?returnTo="+r.URL.Path, http.StatusSeeOther)
 }
 
 // UserFromSession extracts the user from the session.
