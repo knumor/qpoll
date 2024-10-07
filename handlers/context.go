@@ -15,6 +15,7 @@ type Storage interface {
 	Save(p models.Poll) error
 	Load(id string) (models.Poll, error)
 	LoadByCode(code string) (models.Poll, error)
+	LoadAllByUser(username string) ([]models.Poll, error)
 	Close()
 }
 

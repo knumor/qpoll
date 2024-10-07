@@ -78,6 +78,7 @@ func setupRoutes(mux *http.ServeMux, hc *handlers.HandlerContext) {
 	mux.HandleFunc("POST /join", hc.JoinExistingPoll)
 	mux.Handle("GET /present/{id}", hc.RequireAuth(http.HandlerFunc(hc.PresentPoll)))
 	mux.Handle("GET /qr/{id}", hc.RequireAuth(http.HandlerFunc(hc.GenQRForPoll)))
+	mux.Handle("GET /polls", hc.RequireAuth(http.HandlerFunc(hc.ListPollsPage)))
 	mux.HandleFunc("GET /login", hc.LoginPage)
 	mux.HandleFunc("POST /login", hc.Authenticate)
 	mux.HandleFunc("GET /{$}", hc.JoinPollPage)

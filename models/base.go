@@ -17,12 +17,24 @@ const (
 	WordCloudPoll
 )
 
+func (pt PollType) String() string {
+	switch pt {
+	case MultipleChoicePoll:
+		return "Multiple Choice"
+	case WordCloudPoll:
+		return "Word Cloud"
+	default:
+		return fmt.Sprintf("PollType(%d)", pt)
+	}
+}
+
 // Poll is an interface for a poll.
 type Poll interface {
 	ID() string
 	Question() string
 	Code() string
 	CreatedAt() time.Time
+	Owner() string
 	Type() PollType
 	ResponseCount() int
 	VoteCount() int
@@ -102,6 +114,10 @@ func (cpd CommonPollData) VoteCount() int {
 func (cpd *CommonPollData) AddVote(responseCount int) {
 	cpd.numVotes++
 	cpd.numResponses += responseCount
+}
+
+func (cpt *CommonPollData) Owner() string {
+	return cpt.owner
 }
 
 func newPollCode() uint64 {

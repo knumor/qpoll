@@ -60,5 +60,18 @@ func (ms *memstore) LoadByCode(code string) (models.Poll, error) {
 	return nil, fmt.Errorf("poll with code %s not found", code)
 }
 
+// LoadAllByUser loads all polls by user from the storage.
+func (ms *memstore) LoadAllByUser(username string) ([]models.Poll, error) {
+	ms.RLock()
+	defer ms.RUnlock()
+	var polls []models.Poll
+	for _, p := range ms.pollsByID {
+		if p.Owner() == username {
+			polls = append(polls, p)
+		}
+	}
+	return polls, nil
+}
+
 func (ms *memstore) Close() {
 }

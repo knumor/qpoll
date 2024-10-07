@@ -127,6 +127,38 @@ func (s *sqlite) LoadByCode(code string) (models.Poll, error) {
 	return p, err
 }
 
+// LoadAllByUser loads all polls by user from the storage.
+func (s *sqlite) LoadAllByUser(username string) ([]models.Poll, error) {
+	start := time.Now()
+	slog.Info("LoadAllByUser", "username", username)
+	rows, err := s.readDB.Query("SELECT id, type, data FROM polls")
+	if err != nil {
+		return nil, fmt.Errorf("failed to load polls for user %s: %w", username, err)
+	}
+	defer rows.Close()
+	var polls []models.Poll
+	for rows.Next() {
+		var id string
+		var data string
+		var pollType models.PollType
+		err = rows.Scan(&id, &pollType, &data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan row: %w", err)
+		}
+		p, err := createPollObject(id, pollType, data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create poll object: %w", err)
+		}
+		if p.Owner() != username {
+			continue
+		}
+		polls = append(polls, p)
+	}
+	elapsed := time.Since(start)
+	slog.Info("LoadAllByUser done", "username", username, "elapsed", elapsed)
+	return polls, nil
+}
+
 func createPollObject(id string, pollType models.PollType, data string) (models.Poll, error) {
 	switch pollType {
 	case models.MultipleChoicePoll:
