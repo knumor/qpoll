@@ -11,7 +11,7 @@ func PollCounter(respCount, voteCount int) g.Node {
 	return Div(ID("poll-counter"),
 		hx.SwapOOB("poll-counter"),
 		Class("absolute top-30 left-10 text-gray-400 text-lg transition-all"),
-		P(g.Textf("%d responses", respCount)),
+		g.If(respCount >= 0, P(g.Textf("%d responses", respCount))),
 		P(g.Textf("%d votes", voteCount)),
 	)
 }
