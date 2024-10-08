@@ -6,12 +6,14 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/components"
 	"github.com/knumor/qpoll/models"
+	"github.com/knumor/qpoll/views"
 )
 
 // CreateWordCloudPage serves the create word cloud page.
 func (hc *HandlerContext) CreateWordCloudPage(rw http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
-	_ = hc.pages.CreateWordCloudPage(csrfToken).Render(rw)
+	user, _ := hc.UserFromSession(r)
+	views.Page("Create a Word Cloud", false, user, hc.pages.CreateWordCloudPage(csrfToken)).Render(rw)
 }
 
 // CreateWordCloud creates a word cloud.
@@ -27,7 +29,7 @@ func (hc *HandlerContext) CreateWordCloud(rw http.ResponseWriter, r *http.Reques
 	http.Redirect(rw, r, "/present/"+wc.ID(), http.StatusSeeOther)
 }
 
-// GetWordCloud generates and servers a word cloud.
+// GetWordCloud generates and serves a word cloud.
 func (hc *HandlerContext) GetWordCloud(rw http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	p, _ := hc.store.Load(id)

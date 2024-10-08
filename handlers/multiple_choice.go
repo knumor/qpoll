@@ -7,12 +7,14 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/components"
 	"github.com/knumor/qpoll/models"
+	"github.com/knumor/qpoll/views"
 )
 
 // CreateMultipleChoicePage serves the create multiple choice page.
 func (hc *HandlerContext) CreateMultipleChoicePage(rw http.ResponseWriter, r *http.Request) {
 	csrfToken := csrf.Token(r)
-	_ = hc.pages.CreateMultipleChoicePage(csrfToken).Render(rw)
+	user, _ := hc.UserFromSession(r)
+	views.Page("Create Multiple Choice", false, user, hc.pages.CreateMultipleChoicePage(csrfToken)).Render(rw)
 }
 
 // CreateMultipleChoice creates a multiple choice poll.

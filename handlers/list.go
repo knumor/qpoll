@@ -3,6 +3,8 @@ package handlers
 import (
 	"log/slog"
 	"net/http"
+
+	"github.com/knumor/qpoll/views"
 )
 
 // ListPollsPage serves the list polls page.
@@ -19,6 +21,6 @@ func (hc *HandlerContext) ListPollsPage(rw http.ResponseWriter, r *http.Request)
 		http.Error(rw, "Error loading polls", http.StatusInternalServerError)
 		return
 	}
-	_ = hc.pages.ListPollsPage(polls).Render(rw)
+	views.Page("My Polls", false, user, hc.pages.ListPollsPage(polls)).Render(rw)
 }
 

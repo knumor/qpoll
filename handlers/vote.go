@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/models"
+	"github.com/knumor/qpoll/views"
 )
 
 // VotePage serves the vote page.
@@ -19,12 +20,23 @@ func (hc *HandlerContext) VotePage(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	csrfToken := csrf.Token(r)
+	user, _ := hc.UserFromSession(r)
 	switch p.Type() {
 	case models.WordCloudPoll:
-		_ = hc.pages.WordsVotePage(p.ID(), p.Question(), false, csrfToken).Render(rw)
+		views.Page(
+			"Vote",
+			false,
+			user,
+			hc.pages.WordsVotePage(p.ID(), p.Question(), false, csrfToken),
+		).Render(rw)
 	case models.MultipleChoicePoll:
 		mc := p.(*models.MultipleChoice)
-		_ = hc.pages.MultipleChoiceVotePage(mc.ID(), mc.Question(), mc.GetOptions(), csrfToken).Render(rw)
+		views.Page(
+			"Vote",
+			false,
+			user,
+			hc.pages.MultipleChoiceVotePage(mc.ID(), mc.Question(), mc.GetOptions(), csrfToken),
+		).Render(rw)
 	default:
 		slog.Error("Invalid poll type", "type", p.Type())
 		http.Error(rw, "invalid poll type", http.StatusBadRequest)
@@ -42,6 +54,7 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	csrfToken := csrf.Token(r)
+	user, _ := hc.UserFromSession(r)
 	switch p.Type() {
 	case models.WordCloudPoll:
 		words := r.PostForm["words"]
@@ -56,8 +69,13 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 			cnt++
 		}
 		wc.AddVote(cnt)
-	_ = hc.store.Save(wc)
-	_ = hc.pages.WordsVotePage(p.ID(), p.Question(), true, csrfToken).Render(rw)
+		_ = hc.store.Save(wc)
+		views.Page(
+			"Vote",
+			false,
+			user,
+			hc.pages.WordsVotePage(p.ID(), p.Question(), true, csrfToken),
+		).Render(rw)
 	case models.MultipleChoicePoll:
 		mc := p.(*models.MultipleChoice)
 		choice := r.PostForm.Get("choice")
@@ -65,7 +83,7 @@ func (hc *HandlerContext) VoteSubmit(rw http.ResponseWriter, r *http.Request) {
 		slog.Info("Voted for choice", "choice", idx)
 		mc.AddVoteForOption(idx)
 		_ = hc.store.Save(mc)
-		_ = hc.pages.ThankYouPage().Render(rw)
+		views.Page("Thank you", false, user, hc.pages.ThankYouPage()).Render(rw)
 	default:
 		slog.Error("VoteSubmit: Invalid poll type", "type", fmt.Sprintf("%T", p))
 		http.Error(rw, "invalid poll type", http.StatusBadRequest)

@@ -7,13 +7,15 @@ import (
 
 	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/models"
+	"github.com/knumor/qpoll/views"
 )
 
 // LoginPage serves the login page.
 func (hc *HandlerContext) LoginPage(rw http.ResponseWriter, r *http.Request) {
 	returnTo := r.FormValue("returnTo")
 	csrfToken := csrf.Token(r)
-	_ = hc.pages.LoginPage(csrfToken, "", returnTo).Render(rw)
+	user, _ := hc.UserFromSession(r)
+	views.Page("Login", false, user, hc.pages.LoginPage(csrfToken, "", returnTo)).Render(rw)
 }
 
 // Authenticate authenticates a user.
@@ -21,7 +23,7 @@ func (hc *HandlerContext) Authenticate(rw http.ResponseWriter, r *http.Request) 
 	returnTo := r.FormValue("returnTo")
 	err := hc.sessions.RenewToken(r.Context())
 	if err != nil {
-	http.Error(rw, err.Error(), 500)
+		http.Error(rw, err.Error(), 500)
 		return
 	}
 	dummyuser := models.User{
@@ -41,6 +43,7 @@ func (hc *HandlerContext) Authenticate(rw http.ResponseWriter, r *http.Request) 
 	http.Redirect(rw, r, returnTo, http.StatusSeeOther)
 	return
 }
+
 // 	csrfToken := csrf.Token(r)
 // 	_ = views.LoginPage(csrfToken, "invalid credentials", returnTo).Render(rw)
 // }
@@ -61,18 +64,14 @@ func (hc *HandlerContext) RequireAuth(next http.Handler) http.Handler {
 			http.Error(rw, err.Error(), 500)
 			return
 		}
-		// Set the authenticated user for views to use within this request.
-		hc.pages.AuthenticatedUser = user
 		next.ServeHTTP(rw, r)
-		// Clear the authenticated user from the views after the request is done.
-		hc.pages.AuthenticatedUser = models.User{}
 	}
 	return http.HandlerFunc(fn)
 }
 
 func hxAwareRedirect(rw http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("HX-Request") == "true" {
-		rw.Header().Set("HX-Redirect", "/login?returnTo=" + r.Header.Get("HX-Current-URL"))
+		rw.Header().Set("HX-Redirect", "/login?returnTo="+r.Header.Get("HX-Current-URL"))
 		rw.WriteHeader(http.StatusOK)
 		return
 	}
@@ -90,4 +89,3 @@ func (hc *HandlerContext) UserFromSession(r *http.Request) (models.User, error) 
 	}
 	return user, nil
 }
-
