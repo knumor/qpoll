@@ -1,6 +1,6 @@
 build:
 	@npx tailwindcss -i views/css/styles.css -o public/styles.css
-	@go build -o bin/qpoll main.go 
+	@go build -ldflags "-X main.Env=prod" -o bin/qpoll main.go 
 
 test:
 	@go test -v ./...
