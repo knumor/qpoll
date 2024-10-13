@@ -19,16 +19,25 @@ type Storage interface {
 	Close()
 }
 
+// AuthCallbackFunc is a callback function for returning from an authentication provider.
+type AuthCallbackFunc func(http.ResponseWriter, *http.Request, models.User)
+
+// AuthProvider is an interface for authentication providers
+type AuthProvider interface {
+	Authenticate(rw http.ResponseWriter, r *http.Request, callback AuthCallbackFunc)
+}
+
 // HandlerContext is a common context struct for handler methods
 type HandlerContext struct {
-	store    Storage
-	sessions *scs.SessionManager
-	pages    *views.PageCollection
+	store        Storage
+	sessions     *scs.SessionManager
+	pages        *views.PageCollection
+	authprovider AuthProvider
 }
 
 // NewHandlerContext creates a new handler context
-func NewHandlerContext(store Storage, sessions *scs.SessionManager) *HandlerContext {
-	return &HandlerContext{store: store, sessions: sessions, pages: &views.PageCollection{}}
+func NewHandlerContext(store Storage, sessions *scs.SessionManager, authprovider AuthProvider) *HandlerContext {
+	return &HandlerContext{store: store, sessions: sessions, pages: &views.PageCollection{}, authprovider: authprovider}
 }
 
 // EnsureClientID is a middleware that ensures a client ID is set in the session

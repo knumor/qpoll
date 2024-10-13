@@ -12,6 +12,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/gorilla/csrf"
+	"github.com/knumor/qpoll/authproviders"
 	"github.com/knumor/qpoll/handlers"
 	"github.com/knumor/qpoll/storage"
 )
@@ -37,20 +38,25 @@ func main() {
 	}()
 
 	secure := true
+	baseURL := os.Getenv("BASE_URL")
 	if Env == "dev" {
 		slog.Info("Running in dev mode")
 		secure = false
+		baseURL = "http://localhost:8080"
 	}
 
 	sessionManager := scs.New()
 	sessionManager.Lifetime = 24 * time.Hour
 	sessionManager.Cookie.Secure = secure
 
-	handlerContext := handlers.NewHandlerContext(pollStorage, sessionManager)
+	feideAuthProvider := authproviders.NewFeideAuthProvider(baseURL + "/auth/callback")
+	mux.Handle("GET /auth/callback", http.HandlerFunc(feideAuthProvider.AuthResponseHandler))
+
+	handlerContext := handlers.NewHandlerContext(pollStorage, sessionManager, feideAuthProvider)
 	setupRoutes(mux, handlerContext)
 
 	CSRF := csrf.Protect(
-		[]byte("32-long-byte-key-auth"),
+		[]byte("2543b4efe309a66bcbf93a390086abf4"),
 		csrf.Path("/"),
 		csrf.Secure(secure),
 		csrf.FieldName("csrf_token"),

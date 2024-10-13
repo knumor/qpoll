@@ -45,7 +45,7 @@ func header(authName string) g.Node {
 				g.If(authName != "", headerLink("/polls", "My polls")),
 				A(Class("hover:text-sky-500 !ml-auto"),
 					g.If(authName != "", g.Group(
-						[]g.Node{Href("/profile"), g.Text(authName)}),
+						[]g.Node{Href("#"), g.Text(authName)}),
 					),
 					g.If(authName == "", g.Group(
 						[]g.Node{Href("/login"), g.Text("Login")}),

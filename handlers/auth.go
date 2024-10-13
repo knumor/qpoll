@@ -26,28 +26,18 @@ func (hc *HandlerContext) Authenticate(rw http.ResponseWriter, r *http.Request) 
 		http.Error(rw, err.Error(), 500)
 		return
 	}
-	dummyuser := models.User{
-		Username: "dummyuser",
-		ID:       "dummyid",
-		Email:    "dummy@example.invalid",
-		Name:     "Dummy User",
-	}
-	userdata, err := json.Marshal(dummyuser)
-	if err != nil {
-		http.Error(rw, err.Error(), 500)
-		return
-	}
-	hc.sessions.Put(r.Context(), "user", string(userdata))
-	slog.Info("Authenticated user", "user", dummyuser)
-	slog.Info("Redirecting to", "returnTo", returnTo)
-	http.Redirect(rw, r, returnTo, http.StatusSeeOther)
-	return
+	hc.authprovider.Authenticate(rw, r, func(rw http.ResponseWriter, r *http.Request, authUser models.User) {
+		userdata, err := json.Marshal(authUser)
+		if err != nil {
+			http.Error(rw, err.Error(), 500)
+			return
+		}
+		hc.sessions.Put(r.Context(), "user", string(userdata))
+		slog.Info("Authenticated user", "user", authUser)
+		slog.Info("Redirecting to", "returnTo", returnTo)
+		http.Redirect(rw, r, returnTo, http.StatusSeeOther)
+	})
 }
-
-// 	csrfToken := csrf.Token(r)
-// 	_ = views.LoginPage(csrfToken, "invalid credentials", returnTo).Render(rw)
-// }
-//
 
 // RequireAuth is a middleware that requires authentication.
 func (hc *HandlerContext) RequireAuth(next http.Handler) http.Handler {
@@ -81,6 +71,9 @@ func hxAwareRedirect(rw http.ResponseWriter, r *http.Request) {
 // UserFromSession extracts the user from the session.
 func (hc *HandlerContext) UserFromSession(r *http.Request) (models.User, error) {
 	userdata := hc.sessions.GetString(r.Context(), "user")
+	if userdata == "" {
+		return models.User{}, nil
+	}
 	var user models.User
 	err := json.Unmarshal([]byte(userdata), &user)
 	if err != nil {

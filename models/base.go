@@ -74,9 +74,6 @@ func initPoll(question, owner string, polltype PollType) CommonPollData {
 
 // ID returns the id of the poll.
 func (cpd CommonPollData) ID() string {
-	if cpd.id == "" {
-		panic("ID is empty")
-	}
 	return cpd.id
 }
 
@@ -116,8 +113,9 @@ func (cpd *CommonPollData) AddVote(responseCount int) {
 	cpd.numResponses += responseCount
 }
 
-func (cpt *CommonPollData) Owner() string {
-	return cpt.owner
+// Owner returns the owner of the poll.
+func (cpd CommonPollData) Owner() string {
+	return cpd.owner
 }
 
 func newPollCode() uint64 {
