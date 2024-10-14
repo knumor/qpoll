@@ -22,7 +22,7 @@ func (mwc *MyWriteCloser) Close() error {
 // GenQRForPoll generates a QR code as image data
 func (hc *HandlerContext) GenQRForPoll(rw http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	qr, err := qrcode.New(fmt.Sprintf("http://10.0.0.33:8080/vote/%s", id))
+	qr, err := qrcode.New(fmt.Sprintf("%s/vote/%s", hc.baseURL, id))
 	if err != nil {
 		http.Error(rw, "failed to create QR code", http.StatusInternalServerError)
 		return

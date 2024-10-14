@@ -52,7 +52,7 @@ func main() {
 	feideAuthProvider := authproviders.NewFeideAuthProvider(baseURL + "/auth/callback")
 	mux.Handle("GET /auth/callback", http.HandlerFunc(feideAuthProvider.AuthResponseHandler))
 
-	handlerContext := handlers.NewHandlerContext(pollStorage, sessionManager, feideAuthProvider)
+	handlerContext := handlers.NewHandlerContext(baseURL, pollStorage, sessionManager, feideAuthProvider)
 	setupRoutes(mux, handlerContext)
 
 	CSRF := csrf.Protect(

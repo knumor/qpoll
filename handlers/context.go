@@ -29,6 +29,7 @@ type AuthProvider interface {
 
 // HandlerContext is a common context struct for handler methods
 type HandlerContext struct {
+	baseURL      string
 	store        Storage
 	sessions     *scs.SessionManager
 	pages        *views.PageCollection
@@ -36,8 +37,14 @@ type HandlerContext struct {
 }
 
 // NewHandlerContext creates a new handler context
-func NewHandlerContext(store Storage, sessions *scs.SessionManager, authprovider AuthProvider) *HandlerContext {
-	return &HandlerContext{store: store, sessions: sessions, pages: &views.PageCollection{}, authprovider: authprovider}
+func NewHandlerContext(baseURL string, store Storage, sessions *scs.SessionManager, authprovider AuthProvider) *HandlerContext {
+	return &HandlerContext{
+		baseURL: baseURL,
+		store: store,
+		sessions: sessions,
+		pages: &views.PageCollection{},
+		authprovider: authprovider,
+	}
 }
 
 // EnsureClientID is a middleware that ensures a client ID is set in the session
