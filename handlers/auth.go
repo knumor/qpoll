@@ -33,6 +33,9 @@ func (hc *HandlerContext) Authenticate(rw http.ResponseWriter, r *http.Request) 
 			return
 		}
 		hc.sessions.Put(r.Context(), "user", string(userdata))
+		if returnTo == "" {
+			returnTo = "/"
+		}
 		slog.Info("Authenticated user", "user", authUser)
 		slog.Info("Redirecting to", "returnTo", returnTo)
 		http.Redirect(rw, r, returnTo, http.StatusSeeOther)
