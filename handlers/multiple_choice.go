@@ -51,6 +51,6 @@ func (hc *HandlerContext) GetMultipleChoice(rw http.ResponseWriter, r *http.Requ
 		return
 	}
 	opts := wc.GetOptions()
-	// _ = components.PollCounter(wc.ResponseCount(), wc.VoteCount()).Render(rw)
+	_ = components.PollCounter(-1, wc.VoteCount()).Render(rw)
 	_ = components.MultipleChoiceResults(id, opts).Render(rw)
 }
