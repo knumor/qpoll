@@ -23,10 +23,7 @@ func MultipleChoiceResults(id string, options []models.Option) g.Node {
 		Table(Class("charts-css column data-outside data-spacing-10 show-labels text-sky-700"),
 			g.Group(
 				g.Map(options, func(option models.Option) g.Node {
-					w := 0.01
-					if option.Weight > 0 {
-						w = option.Weight
-					}
+					w := max(option.Weight, 0.01)
 					return Tr(
 						g.Raw(`<th scope="row" style="line-height:0rem">`+option.Text+`</th>`),
 						Td(
