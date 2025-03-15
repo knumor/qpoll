@@ -118,3 +118,12 @@ func (wc *WordCloud) MarshalJSON() ([]byte, error) {
 		string(words),
 	)), nil
 }
+
+// Reset resets the word cloud.
+func (wc *WordCloud) Reset() {
+	wc.Lock()
+	wc.words = make(map[string]int)
+	wc.numResponses = 0
+	wc.numVotes = 0
+	wc.Unlock()
+}

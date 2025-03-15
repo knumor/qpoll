@@ -40,6 +40,7 @@ type Poll interface {
 	VoteCount() int
 	AddVote(int)
 	MarshalJSON() ([]byte, error)
+	Reset()
 }
 
 // CommonPollData is a struct with common poll data

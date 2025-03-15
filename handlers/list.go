@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/knumor/qpoll/views"
 )
 
@@ -21,6 +22,7 @@ func (hc *HandlerContext) ListPollsPage(rw http.ResponseWriter, r *http.Request)
 		http.Error(rw, "Error loading polls", http.StatusInternalServerError)
 		return
 	}
-	views.Page("My Polls", false, user, hc.pages.ListPollsPage(polls)).Render(rw)
+	csrfToken := csrf.Token(r)
+	views.Page("My Polls", false, user, hc.pages.ListPollsPage(polls, csrfToken)).Render(rw)
 }
 

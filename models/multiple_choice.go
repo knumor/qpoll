@@ -133,3 +133,12 @@ func (mc *MultipleChoice) MarshalJSON() ([]byte, error) {
 		string(counts),
 	)), nil
 }
+
+// Reset resets the counts of the poll.
+func (mc *MultipleChoice) Reset() {
+	mc.Lock()
+	mc.counts = make([]int, len(mc.options))
+	mc.numResponses = 0
+	mc.numVotes = 0
+	mc.Unlock()
+}
