@@ -1,0 +1,80 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sqlite-data
+  namespace: qpoll
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qpoll
+  namespace: qpoll
+spec:
+  selector:
+    matchLabels:
+      app: qpoll
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: qpoll
+    spec:
+      containers:
+      - name: qpoll
+        image: knumor/qpoll:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: sqlite-data
+          mountPath: /app/db
+      volumes:
+      - name: sqlite-data
+        persistentVolumeClaim:
+          claimName: sqlite-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qpoll
+  namespace: qpoll
+  labels:
+    app: qpoll
+spec:
+  ports:
+  - name: qpoll
+    port: 8080
+  selector:
+    app: qpoll
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qpoll
+  namespace: qpoll
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: qpoll.mk.priv.no
+    http:
+      paths:
+      - backend:
+          service:
+            name: qpoll
+            port:
+              number: 8080
+        path: "/"
+        pathType: Prefix
+  tls:
+    - hosts:
+      - qpoll.mk.priv.no
+      secretName: qpoll-tls
