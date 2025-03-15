@@ -14,6 +14,12 @@ func (hc *HandlerContext) ResetPoll(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to load poll", http.StatusInternalServerError)
 		return
 	}
+	user, _ := hc.UserFromSession(r)
+	if p.Owner() != user.Username {
+		slog.Error("ResetPoll: User is not the owner", "user", user.Username, "owner", p.Owner())
+		http.Error(rw, "user is not the owner", http.StatusForbidden)
+		return
+	}
 	p.Reset()
 	if err := hc.store.Save(p); err != nil {
 		slog.Error("ResetPoll: Failed to save poll", "error", err)
