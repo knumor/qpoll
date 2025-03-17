@@ -25,7 +25,7 @@ func MultipleChoiceResults(id string, options []models.Option) g.Node {
 				g.Map(options, func(option models.Option) g.Node {
 					w := max(option.Weight, 0.01)
 					return Tr(
-						g.Raw(`<th scope="row" style="line-height:0rem">`+option.Text+`</th>`),
+						g.Raw(`<th scope="row" style="bottom:-1.5rem">`+option.Text+`</th>`),
 						Td(
 							ID(fmt.Sprintf("mc-bar-%d", option.Index)),
 							Style(fmt.Sprintf("--size: %.2f", w)),

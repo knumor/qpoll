@@ -46,7 +46,7 @@ func voteTextInput(placehoder, name string, autofocus bool) g.Node {
 		Type("text"),
 		Name(name),
 		Placeholder(placehoder),
-		MaxLength("25"),
+		MaxLength("60"),
 		g.If(autofocus, AutoFocus()),
 	)
 }
