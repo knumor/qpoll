@@ -30,7 +30,9 @@ func MultipleChoiceResults(id string, options []models.Option) g.Node {
 					}
 					thStyle := fmt.Sprintf("bottom:%s", labelBottomOffset)
 					return Tr(
-						g.Raw(`<th scope="row" style="` + thStyle + `">`+option.Text+`</th>`),
+						g.Raw(`<th scope="row" style="` + thStyle + `">`),
+						g.Text(option.Text),
+						g.Raw(`</th>`),
 						Td(
 							ID(fmt.Sprintf("mc-bar-%d", option.Index)),
 							Style(fmt.Sprintf("--size: %.2f", w)),
