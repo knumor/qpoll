@@ -56,7 +56,7 @@ func main() {
 	setupRoutes(mux, handlerContext)
 
 	CSRF := csrf.Protect(
-		[]byte("2543b4efe309a66bcbf93a390086abf4"),
+		[]byte(os.Getenv("CSRF_KEY")),
 		csrf.Path("/"),
 		csrf.Secure(secure),
 		csrf.FieldName("csrf_token"),

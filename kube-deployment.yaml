@@ -26,7 +26,20 @@ spec:
         app: qpoll
     spec:
       containers:
-      - name: qpoll
+      - env:
+        - name: BASE_URL
+          value: https://qpoll.mk.priv.no
+        - name: FEIDE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: feide-client-secret
+              name: secrets
+        - name: CSRF_KEY
+          valueFrom:
+            secretKeyRef:
+              key: csrf-secret
+              name: secrets
+        name: qpoll
         image: knumor/qpoll:latest
         imagePullPolicy: Always
         ports:
